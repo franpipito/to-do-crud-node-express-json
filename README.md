@@ -1,6 +1,7 @@
 # FranPipito To-Do (Node + Express + JSON)
 
-![Vista previa](docs/preview.png)
+![Vista previa](preview.png)
+
 
 
 **Demo web:** https://tareasfrancopipito.netlify.app/  
