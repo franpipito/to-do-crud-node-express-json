@@ -1,6 +1,6 @@
 # FranPipito To-Do (Node + Express + JSON)
 
-![preview](docs/preview.png)
+![preview]("C:\Users\Franco\Proyectos\tareas-crud-public\preview.png")
 
 **Demo web:** https://tareasfrancopipito.netlify.app/  
 **API (Render):** https://to-do-crud-node-express-json.onrender.com
