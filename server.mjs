@@ -1,7 +1,7 @@
 import express from 'express'
+import cors from 'cors' //para render
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
-import cors from 'cors' //para render
 import tasksRouter from './routes/tasks.routes.mjs'
 
 
@@ -15,16 +15,12 @@ const PORT = process.env.PORT || 3000
 
 
 
-// CORS: permitir netlify
-const ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'tareasfrancopipito.netlify.app'      
-]
 app.use(cors({
-    origin: ALLOWED_ORIGINS,
+    origin: ['https://tareasfrancopipito.netlify.app'], // o '*' si querés simplificar
     methods: ['GET','POST','PUT','DELETE'],
     allowedHeaders: ['Content-Type']
 }))
+
 
 
 //middlewares
@@ -50,6 +46,6 @@ app.use('/api/tasks', tasksRouter)
 app.use((req,res)=> res.status(404).send('No encontrado')) //se ejecuta si ninguna ruta anterior respondio
 
 //listen
-app.listen(PORT, () => console.log(`http://localhost:${PORT}`)) //abre socket en puerto 3000 para aceptar conexiones, callback listen confirma que ya esta listo
+app.listen(PORT, () => console.log(`listening on ${PORT}`)) //abre socket en puerto 3000 para aceptar conexiones, callback listen confirma que ya esta listo
 
 
