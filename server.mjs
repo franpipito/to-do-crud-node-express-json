@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 3000
 // CORS: permitir netlify
 const ALLOWED_ORIGINS = [
     'http://localhost:3000',
-    'https://TU-SITIO.netlify.app'      
+    'tareasfrancopipito.netlify.app'      
 ]
 app.use(cors({
     origin: ALLOWED_ORIGINS,
