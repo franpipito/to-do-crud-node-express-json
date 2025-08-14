@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FranPipito To-Do</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <!-- NAV -->
+    <header class="site-nav">
+        <div class="nav-inner">
+            <a class="brand" href="/">Tareas @FrancoPipito</a>
+        <nav class="menu">
+            <a href="https://github.com/franpipito/tareas-crud-node-express-json" target="_blank" rel="noopener">GitHub</a>
+            <a href="https://www.linkedin.com/in/francopipito/" target="_blank" rel="noopener">Linkedin</a>
+        </nav>
+        </div>
+    </header>
+    <!-- CONTENIDO -->
+    <main class="page">
+
+    <form id="taskForm" autocomplete="off">
+        <label for="titulo">Titulo</label>
+        <input id="titulo" name="titulo" type="text" required/> <!-- obligatorio --> 
+
+        <label for="descripcion">Descripcion</label>
+        <input id="descripcion" name="descripcion" type="text" />  
+
+        <label for="fecha_limite">Fecha limite</label>
+        <input id="fecha_limite" name="fecha_limite" type="date" />  
+
+        <label for="estado">Estado</label>
+        <!-- dejar opcion vacia y pendiente default o pendiente como selected -->
+        <select id="estado" name="estado">
+            <option value="">(usar predeterminado)</option>
+            <option value="pendiente">(pendiente)</option>
+            <option value="en_progreso">(en_progreso)</option>
+            <option value="completada">(completada)</option>
+        </select> 
+
+        <button type="submit">crear</button>
+        <button type="button" id="cancelEdit" hidden>cancelar</button>
+
+        <!-- Lugar para mensajes UX -->
+        <p id="formMsg" aria-live="polite"></p>
+    </form>
+    <table id="tasksTable">
+        <thead>
+            <tr>
+                <th>Titulo</th>
+                <th>Descripcion</th>
+                <th>Fecha limite</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tasksBody"></tbody>
+    </table>  
+
+    <script>
+        //backend en produccion
+        const BASE_URL = ''; // '' en local (mismo host). En prod: 'https://TU-API.onrender.com'
+
+        //estado en memoria
+        let editingId = null
+
+            // referencias de UI (definidas una sola vez y reutilizadas)
+        const form = document.querySelector('#taskForm')
+        const submitBtn = form.querySelector('button[type="submit"]')
+        const cancelBtn = document.getElementById('cancelEdit')
+        const msg = document.querySelector('#formMsg')
+
+         // cancelar edición
+        cancelBtn.addEventListener('click', () => {
+        editingId = null
+        form.reset()
+        submitBtn.textContent = 'crear'
+        cancelBtn.hidden = true
+        msg.textContent = 'Edición cancelada'
+        form.titulo.focus()
+        })
+
+
+        async function init() {
+            try {
+                //peticion http al backend
+                const res = await fetch('/api/tasks') 
+                //si la respuesta no es 2xx, fuerza el catch
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status} ${res.statusText}`)
+                }
+
+                //parsear el cuerpo a JS
+                const tasks = await res.json()
+                console.log('Tareas desde API: ', tasks)
+
+                //pintar
+                renderTable(Array.isArray(tasks) ? tasks : [])
+            } catch (err) {
+                //errores de red/Js
+                console.error('No se pudieron cargar las tareas', err)
+                //incluso en error, muestra estado vacio
+                renderTable([])
+            }
+        }
+
+        function renderTable (tasks) {
+            //ubicar tbody
+            const tbody = document.querySelector('#tasksBody')
+            //limpiar por si se vuelvo a renderizar
+            tbody.innerHTML = ''
+        //si no hay tareas muestra una fila amable
+        if (!Array.isArray(tasks) || tasks.length === 0) {
+            const tr = document.createElement('tr')
+            const td = document.createElement('td')
+            td.colSpan = 5
+            td.textContent = 'sin tareas'
+            tr.appendChild(td)
+            tbody.appendChild(tr)
+            return
+        }
+
+        //recorrer las tareas y crear una fila por cada una
+        for (const t of tasks) {
+            const tr = document.createElement('tr')
+
+            //Extraer campos
+            const titulo = t.titulo ?? '-'
+            const descripcion = t.descripcion ?? '-'
+            const fechaLimite = t.fecha_limite
+            ? new Date(t.fecha_limite + 'T00:00:00').toLocaleDateString('es-AR')
+            : '-'
+            const estado = t.estado ?? '-'
+            
+            //crear y llenar las 4 celdas
+            const tdTitulo = document.createElement('td')
+            tdTitulo.textContent = titulo
+
+            const tdDesc = document.createElement('td')
+            tdDesc.textContent = descripcion
+
+            const tdFecha = document.createElement('td')
+            tdFecha.textContent = fechaLimite
+
+            const tdEstado = document.createElement('td')
+            const estadoVal = t.estado ?? ''
+            if (estadoVal) {
+                const badge = document.createElement('span')
+                badge.className = `badge estado-${estadoVal}` // pendiente | en_progreso | completada
+                badge.textContent = estadoVal.replace('_', ' ')
+                tdEstado.appendChild(badge)
+            } else {
+                tdEstado.textContent = '-'
+            }
+            //acciones
+            const tdAcciones = document.createElement('td')
+
+            // crear boton editar
+            const btnEditar = document.createElement('button')
+            btnEditar.type = 'button'
+            btnEditar.textContent = 'Editar'
+            btnEditar.dataset.id = t.id
+            btnEditar.className = 'btn btn-edit'
+
+            btnEditar.addEventListener('click', () => {
+                //guarda el id que se esta editando
+                editingId = t.id
+
+                //precarga el formulario
+                form.titulo.value = t.titulo || ''
+                form.descripcion.value = t.descripcion || ''
+                form.fecha_limite.value = t.fecha_limite || ''
+                form.estado.value = t.estado || ''
+
+                //modo edicion en la UI
+                submitBtn.textContent = 'Guardar cambios'
+                cancelBtn.hidden = false
+                form.titulo.focus()
+            })
+
+            //crear boton eliminar
+            const btnEliminar = document.createElement('button')
+            btnEliminar.type = 'button' //tipo boton para submit accidentales
+            btnEliminar.textContent = 'Eliminar' //el boton dice Eliminar
+            btnEliminar.dataset.id = t.id // guarda el id en el boton
+            btnEliminar.className = 'btn btn-delete'
+
+            //handler de click
+            btnEliminar.addEventListener('click', async () => {
+                const id = btnEliminar.dataset.id //guarda el id del boton como constante
+                const ok = confirm('¿Eliminar esta tarea?') //boton confirmacion
+                if (!ok) return //si no toca ok para confirmar no borra
+                
+                btnEliminar.disabled = true //desactiva el boton al hacer clic
+                try {
+                    const res = await fetch(`/api/tasks/${id}`, { method: 'DELETE'})
+                    if (!res.ok) {
+                        //204 sin cuerpo, si no es ok intenga leer error
+                        let info = {}
+                        try { info = await res.json()} catch {}
+                        throw new Error(info.error || `Error HTTP ${res.status}`)
+                    }
+                    await init() //refresca lista desde backend
+                } catch (err) {
+                    alert(err.message || 'No se pudo eliminar')
+                } finally {
+                    btnEliminar.disabled = false
+                }
+            })
+
+            tdAcciones.append(btnEditar, btnEliminar)
+
+            // Agregar las celdas a la fila y la fila al tbody
+            tr.appendChild(tdTitulo)
+            tr.appendChild(tdDesc)
+            tr.appendChild(tdFecha)
+            tr.appendChild(tdEstado)
+            tr.appendChild(tdAcciones)
+
+            tbody.appendChild(tr)
+        }    
+    }
+
+    //ejecuta cuando el DOM esta listo
+    document.addEventListener('DOMContentLoaded', init)
+    
+    //escuchar el submit
+    form.addEventListener('submit', onSubmit)
+    //definir handler
+    async function onSubmit(e) {
+        e.preventDefault() // no se recarga la pagina por envio de form
+
+        //lectura premilinar de valores
+        const fd = new FormData(form)
+        const raw = Object.fromEntries(fd.entries())
+        
+        //normalizar strings
+        const titulo = (raw.titulo ?? '').trim()
+        const descripcion = (raw.descripcion ?? '').trim() || undefined
+
+        // normalizar/validar fecha
+        let fecha = null
+        if (raw.fecha_limite) {
+            const okFormato = /^\d{4}-\d{2}-\d{2}$/.test(raw.fecha_limite)
+            const probe = new Date(raw.fecha_limite + 'T00:00:00')
+            if (!okFormato || Number.isNaN(probe.getTime())) {
+                alert('La fecha no es valida')
+                form.fecha_limite.focus()
+                return
+            }
+            fecha = raw.fecha_limite
+        }
+        
+        // normalizar/validar estado
+        const permitidos = new Set(['pendiente', 'en_progreso', 'completada'])
+        let estado = (raw.estado ?? '').trim().toLowerCase()
+        if (estado && !permitidos.has(estado)) {
+            alert('Estado no valido')
+            form.estado.focus()
+            return
+        }
+        if (!estado) estado = undefined
+
+        //validar titulo requerido
+        if (!titulo) {
+            alert('El titulo es obligatorio')
+            form.titulo.focus()
+            return
+        }
+
+    
+        const payload = {
+            titulo,
+            descripcion,
+            fecha_limite: fecha,
+            estado
+        }
+
+        // UX bloquear y avisar
+        const btn = form.querySelector('button[type="submit"]')
+        const msg = document.querySelector('#formMsg')
+        btn.disabled = true
+        msg.textContent = 'Guardando...'
+
+        const isEditing = !!editingId
+        const url = isEditing ? `/api/tasks/${editingId}` : '/api/tasks'
+        const method = isEditing ? 'PUT' : 'POST'
+
+        //fetch con manejo de errores
+        try {
+            const res = await fetch(url, {
+            method,
+            headers: { 'Content-Type': 'application/json'},
+            body: JSON.stringify(payload)
+        })
+
+        if (!res.ok) {
+            //intenta leer JSON, si no aparece arma uno generico
+            let info = {}
+            try { info = await res.json() } catch {}
+            throw new Error(info.error || `Error HTTP ${res.status}`)
+        }
+
+        const creada = await res.json()
+        console.log('Creada: ', creada)
+
+
+        //mensaje y refresca
+        msg.textContent = isEditing ? 'Actualizada ✅' : 'Creada ✅'
+        await init()
+
+        //reset UI
+        form.reset()
+        form.titulo.focus()
+
+        if (isEditing) {
+            editingId = null
+            submitBtn.textContent = 'crear'
+            cancelBtn.hidden = true
+        }
+
+        } catch (err) {
+            console.error(err)
+            msg.textContent = err.message || 'No se pudo crear la tarea'
+        } finally {
+            // liberar boton siempre
+            btn.disabled = false
+        }
+    }
+
+    </script>
+</body>
+</html>

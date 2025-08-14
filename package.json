@@ -1,0 +1,31 @@
+{
+  "name": "tareas-crud",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.mjs",
+    "dev": "nodemon --ext mjs,js,json --exec node server.mjs",
+    "play": "node play.mjs",
+    "test-esm": "node index.mjs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/franpipito/tareas-crud-node-express-json.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/franpipito/tareas-crud-node-express-json/issues"
+  },
+  "homepage": "https://github.com/franpipito/tareas-crud-node-express-json#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

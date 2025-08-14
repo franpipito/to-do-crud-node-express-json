@@ -1,0 +1,93 @@
+[
+  {
+    "id": "1754855235265",
+    "titulo": "Probar en progreso",
+    "estado": "en_progreso",
+    "descripcion": "modificado",
+    "fecha_limite": "1234-09-20"
+  },
+  {
+    "id": "1755061027788",
+    "titulo": "Estudiar Node",
+    "descripcion": "Repasar controllers",
+    "fecha_limite": "2025-12-01T00:00:00.000Z",
+    "estado": "pendiente"
+  },
+  {
+    "id": "1755068672739",
+    "titulo": "solo titulo",
+    "descripcion": "",
+    "fecha_limite": null,
+    "estado": "pendiente"
+  },
+  {
+    "id": "1755068713965",
+    "titulo": "titulo y fecha",
+    "descripcion": "",
+    "fecha_limite": "2003-09-26T00:00:00.000Z",
+    "estado": "pendiente"
+  },
+  {
+    "id": "1755069525043",
+    "titulo": "titulo y fecha nuevo",
+    "descripcion": "",
+    "fecha_limite": null,
+    "estado": "pendiente"
+  },
+  {
+    "id": "1755069545351",
+    "titulo": "titulo y fecha bien",
+    "descripcion": "",
+    "fecha_limite": "2023-08-26",
+    "estado": "pendiente"
+  },
+  {
+    "id": "1755115084853",
+    "titulo": "hola",
+    "descripcion": "",
+    "fecha_limite": null,
+    "estado": "completada"
+  },
+  {
+    "id": "1755115223355",
+    "titulo": "Probar commit",
+    "descripcion": "smoke test",
+    "fecha_limite": "2025-12-01",
+    "estado": "pendiente"
+  },
+  {
+    "id": "1755126232170",
+    "titulo": "Para editar",
+    "descripcion": "",
+    "fecha_limite": null,
+    "estado": "pendiente"
+  },
+  {
+    "id": "1755129537708",
+    "titulo": "Prueba PUT",
+    "descripcion": "",
+    "fecha_limite": null,
+    "estado": "pendiente"
+  },
+  {
+    "id": "1755129926688",
+    "titulo": "Título actualizado",
+    "descripcion": "",
+    "fecha_limite": null,
+    "estado": "en_progreso"
+  },
+  {
+    "id": "1755149952016",
+    "titulo": "cambio",
+    "descripcion": "prueba",
+    "fecha_limite": "2025-08-17",
+    "estado": "pendiente"
+  },
+  {
+    "id": "1755153300058",
+    "titulo": "Prueba final",
+    "descripcion": "final",
+    "fecha_limite": "2003-02-20",
+    "estado": "completada"
+  }
+]

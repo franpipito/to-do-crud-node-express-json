@@ -1,0 +1,193 @@
+/* ========== Reset & tokens ========== */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+:root{
+--bg: #FAFAFA;            /* fondo */
+--text: #0f172a;          /* gris muy oscuro */
+--muted: #64748b;         /* gris medio */
+--card: #ffffff;          /* tarjetas/tabla */
+--radius: 14px;
+--surface: #ffffff; /* tarjetas/tabla */
+
+/* Amarillos para marca/nav/botón primario */
+--y1: #fef3c7;
+--y2: #fde68a;
+--y3: #facc15;
+
+/* Acciones fuertes */
+--blue: #0ea5e9;          /* editar */
+--blue-fo: #bae6fd;
+--red:  #ef4444;          /* eliminar */
+--red-fo: #fecaca;
+
+/* Estados */
+--pending-bg:   #fde68a;  /* pendiente */
+--pending-fg:   #7a5b00;
+--progress-bg:  #fdba74;  /* en progreso (naranja) */
+--progress-fg:  #7a3e00;
+--done-bg:      #86efac;  /* completada (verde manzana) */
+--done-fg:      #065f46;
+
+--shadow: 0 8px 24px rgba(15, 23, 42, .08);
+}
+
+html, body { height: 100%; }
+body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, Inter, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ========== Nav ========== */
+.site-nav{
+    position: sticky; top: 0; z-index: 10;
+    width: 100%;
+    background: linear-gradient(180deg, var(--y1), var(--y2));
+    box-shadow: 0 1px 0 rgba(0,0,0,.06);
+}
+.nav-inner{
+    max-width: 1100px;
+    margin: 0 auto;
+    height: 64px;
+    padding: 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.brand{
+    font-weight: 800;
+    letter-spacing: .3px;
+    text-decoration: none;
+    color: var(--text);
+}
+.menu a{
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 700;
+    padding: 8px 12px;
+    border-radius: 8px;
+}
+.menu a:hover{ background: rgba(0,0,0,.04); }
+
+/* ========== Layout página ========== */
+.page{
+    max-width: 1100px;
+    margin: 24px auto 56px;
+    padding: 0 16px;
+}
+
+/* ======== Formulario (alineado en 1 fila) ======== */
+#taskForm{
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 12px 16px;
+    align-items: end;         /* alinea las cajas en la misma línea */
+    margin-bottom: 18px;
+}
+
+/* campos (labels fila 1, inputs fila 2) */
+#taskForm label[for="titulo"]      { grid-column: 1 / span 3; grid-row: 1; }
+#taskForm #titulo                  { grid-column: 1 / span 3; grid-row: 2; }
+
+#taskForm label[for="descripcion"] { grid-column: 4 / span 3; grid-row: 1; }
+#taskForm #descripcion             { grid-column: 4 / span 3; grid-row: 2; }
+
+#taskForm label[for="fecha_limite"]{ grid-column: 7 / span 2; grid-row: 1; }
+#taskForm #fecha_limite            { grid-column: 7 / span 2; grid-row: 2; }
+
+#taskForm label[for="estado"]      { grid-column: 9 / span 3; grid-row: 1; }
+#taskForm #estado                  { grid-column: 9 / span 3; grid-row: 2; }
+
+/* botón crear alineado con las cajas */
+#taskForm button[type="submit"]    { grid-column: 12 / span 1; grid-row: 2; }
+
+/* responsive: apilar en móviles */
+@media (max-width: 900px){
+    #taskForm{ grid-template-columns: 1fr 1fr; }
+    #taskForm label,
+    #taskForm input,
+    #taskForm select,
+    #taskForm button[type="submit"]{ grid-column: 1 / -1; }
+}
+
+
+/* ========== Tabla (card) ========== */
+table{
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+thead th{
+    text-align: left;
+    padding: 16px;
+    font-size: .95rem;
+    background: var(--y2);
+}
+tbody td{
+    padding: 16px;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+tbody tr:hover{ background: #fafafa; }
+tbody tr:last-child td{ border-bottom: 0; }
+
+/* ========== Badges de estado ========== */
+.badge{
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: .9rem;
+    line-height: 1;
+}
+.estado-pendiente{
+    background: var(--pending-bg);
+    color: var(--pending-fg);
+}
+.estado-en_progreso{
+    background: var(--progress-bg);
+    color: var(--progress-fg);
+}
+.estado-completada{
+    background: var(--done-bg);
+    color: var(--done-fg);
+}
+
+/* ========== Botones de acciones ========== */
+.btn{
+    height: 36px;
+    padding: 0 14px;
+    margin-right: 8px;
+    border: 0;
+    border-radius: 10px;
+    font-weight: 800;
+    color: #fff;
+    cursor: pointer;
+    box-shadow: 0 2px 0 rgba(0,0,0,.06);
+    transition: transform .02s ease, filter .15s ease, box-shadow .15s ease;
+}
+.btn:last-child{ margin-right: 0; }
+.btn:active{ transform: translateY(1px); }
+
+.btn-edit{
+    background: var(--blue);
+}
+.btn-edit:hover{ filter: brightness(.95); }
+.btn-edit:focus{ outline: 2px solid var(--blue-fo); outline-offset: 2px; }
+
+.btn-delete{
+    background: var(--red);
+}
+.btn-delete:hover{ filter: brightness(.93); }
+.btn-delete:focus{ outline: 2px solid var(--red-fo); outline-offset: 2px; }
+
+/* Helpers opcionales */
+.text-center{ text-align: center; }
