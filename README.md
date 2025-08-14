@@ -1,28 +1,36 @@
-# Tareas CRUD (Node + Express + JSON)
+# FranPipito To-Do (Node + Express + JSON)
 
-Mini proyecto para practicar un **backend con Node.js + Express** y un **frontend estático**.  
-Persistencia simple en `tasks.json` usando `fs/promises` (sin base de datos). Código en **ES Modules** (`.mjs`).
+![preview](docs/preview.png)
 
-## Requisitos
-- Node 18+  
-- npm
+**Demo web:** https://tareasfrancopipito.netlify.app/  
+**API (Render):** https://to-do-crud-node-express-json.onrender.com
 
-## Cómo correr
+Aplicación CRUD de tareas con backend en **Node.js + Express** persistiendo en **JSON** y frontend en **HTML+JS** sin frameworks. Incluye validaciones, estados de tarea y diseño responsive.
+
+---
+
+## ✨ Características
+- Alta / edición / baja de tareas
+- Estados: `pendiente`, `en_progreso`, `completada`
+- Validaciones: título requerido, fecha `AAAA-MM-DD`, estado permitido
+- Mensajes UX (guardando, creada/actualizada), bloqueo de botones y confirmación de borrado
+- Tabla responsiva y badges de estado con colores
+- Frontend desplegado en **Netlify** con **proxy /api** hacia Render (sin tocar JS)
+
+## 🗂️ Endpoints principales
+- `GET  /api/tasks`
+- `POST /api/tasks`
+- `PUT  /api/tasks/:id`
+- `DELETE /api/tasks/:id`
+
+## 🛠️ Tecnologías
+- Node.js 22, Express
+- Persistencia en `tasks.json`
+- HTML, CSS, JS vanilla
+- Netlify (frontend) + Render (API)
+
+## ▶️ Correr en local
 ```bash
 npm install
-npm run dev       # Servidor: http://localhost:3000
-npm run play      # Prueba de persistencia: agrega una tarea a tasks.json
-npm run test-esm  # Test rápido de import/export (math/index)
-```
----
-### Estructura
-public/        # HTML/CSS/JS del frontend
-server.mjs     # Servidor Express (ESM)
-db.mjs         # readTasks/writeTasks sobre tasks.json (fs/promises)
-play.mjs       # Script de prueba de la "BD" JSON
-tasks.json     # "Base de datos" en JSON
-index.mjs      # Demo de import/export con math.mjs
-math.mjs       # Función sumar para test ESM
-
----
-
+npm run dev
+# abre http://localhost:3000
